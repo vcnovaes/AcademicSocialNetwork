@@ -1,4 +1,4 @@
-# Academic Social Network
+# Jambo - An Academic Social Network
 Repository of the project [Academic Social Network](https://github.com/users/vcnovaes/projects/2)
 
 ### About the Project
