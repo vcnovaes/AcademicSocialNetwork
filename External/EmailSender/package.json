@@ -1,0 +1,15 @@
+{
+  "name": "emailsender",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/nodemailer": "^6.4.14",
+    "nodemailer": "^6.9.7"
+  }
+}
