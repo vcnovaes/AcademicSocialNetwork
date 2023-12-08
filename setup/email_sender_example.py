@@ -33,4 +33,5 @@ def publish_message():
 
 
 # Run the publish_message function
-publish_message()
+for i in range(0, 5):
+    publish_message()
