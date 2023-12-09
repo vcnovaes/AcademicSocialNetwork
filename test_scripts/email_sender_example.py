@@ -19,9 +19,9 @@ def publish_message():
     # Message to be published
 
     data = {
-        "reciever": "vcn2@cin.ufpe.br",
-        "subject": "Boa noite rebequinha",
-        "message": "Boa noite meu amorzinho, te amo muito",
+        "reciever": "PUT_THE_RECIVER_EMAIL_HERE",
+        "subject": "SUBJECT__",
+        "message": "-MESSAGE--",
     }
     strg = json.dumps(data)
     # Publish the message to the queue
