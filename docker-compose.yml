@@ -15,3 +15,12 @@ services:
       - rabbitmq
     network_mode: host
     privileged: true # Added to grant extended privileges to the container
+
+  jambo-server:
+    build:
+      context: ./JamboApp/jambo
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8080:8080" # Adjust the port as needed
