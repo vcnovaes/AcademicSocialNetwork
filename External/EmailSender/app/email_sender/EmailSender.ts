@@ -28,9 +28,8 @@ export interface IEmailPayload {
   subject: string;
   message: string;
 }
-export async function sendEmail(rawMessage: string) {
+export async function sendEmail(rawMessage: string, transporter: any) {
   const msg = JSON.parse(rawMessage) as IEmailPayload;
-  const transporter = CreateNodeMailerTransporter();
   try {
     const info = await transporter.sendMail(buildEmailMessage(msg));
   } catch (error) {

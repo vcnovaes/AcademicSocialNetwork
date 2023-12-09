@@ -1,5 +1,6 @@
 import pika
 import json
+import time
 
 
 def publish_message():
@@ -35,3 +36,4 @@ def publish_message():
 # Run the publish_message function
 for i in range(0, 5):
     publish_message()
+    time.sleep(60)

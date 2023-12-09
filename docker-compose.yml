@@ -6,3 +6,11 @@ services:
     ports:
       - "5672:5672" # RabbitMQ default port
       - "15672:15672" # RabbitMQ management plugin port
+
+  email-sender:
+    build:
+      context: ./External/EmailSender
+      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
+    depends_on:
+      - rabbitmq
+    network_mode: host

@@ -1,7 +1,7 @@
 import * as amqp from "amqplib";
 
 const QUEUE_NAME = Bun.env.QUEUE_NAME as string;
-export async function setupConnectionWithBrocker() {
+export async function setupConnectionWithBrocker(retry = 0) {
   let channel: amqp.Channel;
   try {
     const connectionString = Bun.env.RABBIT_MQ_HOST as string;
@@ -12,6 +12,11 @@ export async function setupConnectionWithBrocker() {
   } catch (error) {
     console.error("Error connecting to queue broker");
     console.error(error);
+    if (retry <= Number(Bun.env.MAX_CONNECTION_RETRY)) {
+      setTimeout(() => {
+        setupConnectionWithBrocker(retry++);
+      }, 60);
+    }
     throw error;
   }
   return channel;
