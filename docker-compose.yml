@@ -14,3 +14,4 @@ services:
     depends_on:
       - rabbitmq
     network_mode: host
+    privileged: true # Added to grant extended privileges to the container

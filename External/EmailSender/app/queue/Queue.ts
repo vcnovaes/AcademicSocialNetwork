@@ -13,9 +13,7 @@ export async function setupConnectionWithBrocker(retry = 0) {
     console.error("Error connecting to queue broker");
     console.error(error);
     if (retry <= Number(Bun.env.MAX_CONNECTION_RETRY)) {
-      setTimeout(() => {
-        setupConnectionWithBrocker(retry++);
-      }, 60);
+      setupConnectionWithBrocker(retry++);
     }
     throw error;
   }
