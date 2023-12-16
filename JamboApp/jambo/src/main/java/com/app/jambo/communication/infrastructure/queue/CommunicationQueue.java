@@ -1,10 +1,10 @@
 package com.app.jambo.communication.infrastructure.queue;
 
-public abstract class CommunicationQueue {
+public class CommunicationQueue {
   private String name;
   private CommunicationQueueConfig configuration;
 
-  CommunicationQueue(String name, CommunicationQueueConfig config) {
+  public CommunicationQueue(String name, CommunicationQueueConfig config) {
     this.name = name;
     this.configuration = config;
   }

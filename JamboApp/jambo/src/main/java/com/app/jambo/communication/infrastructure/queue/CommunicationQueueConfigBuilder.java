@@ -7,7 +7,7 @@ public class CommunicationQueueConfigBuilder {
     return this.config;
   }
 
-  CommunicationQueueConfigBuilder() {
+  public CommunicationQueueConfigBuilder() {
     config = new CommunicationQueueConfig();
   }
 

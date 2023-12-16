@@ -3,22 +3,29 @@ package com.app.jambo.communication.infrastructure.queue.rabbitmq;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import javax.management.InvalidAttributeValueException;
+
 import com.app.jambo.communication.infrastructure.queue.CommunicationQueue;
+import com.app.jambo.communication.infrastructure.queue.IProducer;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.AMQP.BasicProperties;
 
-public class RabbitMQProducer {
+public class RabbitMQProducer implements IProducer {
   private Channel channel;
   private CommunicationQueue targetQueue;
   private Connection connection;
 
-  RabbitMQProducer(CommunicationQueue queue) throws IOException, TimeoutException {
+  public void setQueue(CommunicationQueue queue) throws IOException {
+    this.targetQueue = queue;
+    initQueue();
+  }
+
+  public RabbitMQProducer() throws IOException, TimeoutException {
     connection = RabbitMQConfig.connectionFactory()
         .newConnection();
     channel = connection.createChannel();
-    targetQueue = queue;
-    initQueue();
+    targetQueue = null;
   }
 
   private void initQueue() throws IOException {
@@ -31,7 +38,16 @@ public class RabbitMQProducer {
         null);
   }
 
-  public void publishWithoutExchange(String message, BasicProperties props) throws IOException {
-    this.channel.basicPublish("", targetQueue.getName(), props, message.getBytes());
+  public void publish(String message, BasicProperties props, String exchange)
+      throws IOException, InvalidAttributeValueException {
+    if (targetQueue == null) {
+      throw new InvalidAttributeValueException("Target queue was not defined");
+    }
+    this.channel.basicPublish(exchange, targetQueue.getName(), props, message.getBytes());
+  }
+
+  @Override
+  public void publish(String message) throws IOException, InvalidAttributeValueException {
+    this.publish(message, null, "");
   }
 }
