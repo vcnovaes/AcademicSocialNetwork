@@ -1,4 +1,4 @@
-package com.app.jambo.clients.EmailSender;
+package com.app.jambo.communication.clients.EmailSender;
 
 import com.app.jambo.utils.Email;
 
