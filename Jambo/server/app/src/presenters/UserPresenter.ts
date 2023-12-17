@@ -4,7 +4,7 @@ import { QueueClientFactory } from "../communication/infrastructure/queue/QueueC
 import { RedisCacheClient } from "../communication/infrastructure/cache/RedisCacheClient"
 import { CacheManagerFactory } from "../communication/infrastructure/cache/CacheManagerFactory"
 import { UserRepository } from "../persistence/user/UserRespository"
-
+import mongoose from 'mongoose'
 
 const rep = new UserRepository()
 
