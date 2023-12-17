@@ -6,6 +6,8 @@ import com.app.jambo.communication.infrastructure.queue.rabbitmq.RabbitMQProduce
 public class ExternalEmailApplicationClientWrapper {
   private ExternalEmailApplicationClient client;
 
+  private RabbitMQProducer rabbitMQProducer;
+
   public ExternalEmailApplicationClientWrapper(IProducer producer) {
     if (producer == null) {
       try {

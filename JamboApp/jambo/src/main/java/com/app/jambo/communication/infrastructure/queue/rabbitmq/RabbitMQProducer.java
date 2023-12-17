@@ -5,6 +5,9 @@ import java.util.concurrent.TimeoutException;
 
 import javax.management.InvalidAttributeValueException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.app.jambo.communication.infrastructure.queue.CommunicationQueue;
 import com.app.jambo.communication.infrastructure.queue.IProducer;
 import com.rabbitmq.client.Channel;
@@ -22,6 +25,10 @@ public class RabbitMQProducer implements IProducer {
   }
 
   public RabbitMQProducer() throws IOException, TimeoutException {
+    this(new RabbitMQConfig());
+  }
+
+  public RabbitMQProducer(RabbitMQConfig config) throws IOException, TimeoutException {
     connection = RabbitMQConfig.connectionFactory()
         .newConnection();
     channel = connection.createChannel();

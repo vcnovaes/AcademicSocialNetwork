@@ -11,8 +11,8 @@ public class EmailSender implements IEmailSender {
   }
 
   @Override
-  public void sendEmail(Email reciever, String message) {
-    var emailPayload = new EmailPayload(reciever.toString(), message);
+  public void sendEmail(Email reciever, String subject, String message) {
+    var emailPayload = new EmailPayload(reciever.toString(), subject, message);
     emailApplication.sendEmail(emailPayload);
   }
 }
