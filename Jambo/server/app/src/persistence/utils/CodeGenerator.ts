@@ -3,10 +3,10 @@ interface CodeGenerationStrategy
   generateCode(): string
 }
 
-class RandomCodeStrategy implements CodeGenerationStrategy
+export class RandomCodeStrategy implements CodeGenerationStrategy
 {
-  private readonly codeLength: number = 6;
-  constructor ( length: number )
+  private readonly codeLength: number
+  constructor ( length: number = 6 )
   {
     this.codeLength = length
   }
@@ -24,7 +24,7 @@ class RandomCodeStrategy implements CodeGenerationStrategy
   }
 }
 
-class SequentialCodeStrategy implements CodeGenerationStrategy
+export class SequentialCodeStrategy implements CodeGenerationStrategy
 {
   private currentCode: number = 1000;
 
@@ -34,7 +34,7 @@ class SequentialCodeStrategy implements CodeGenerationStrategy
   }
 }
 
-class CodeGenerator
+export class CodeGenerator
 {
   private strategy: CodeGenerationStrategy
 

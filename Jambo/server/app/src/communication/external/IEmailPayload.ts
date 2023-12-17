@@ -1,6 +1,6 @@
 export interface IEmailPayload
 {
-  email: string
+  reciever: string
   subject: string
   message: string
 }

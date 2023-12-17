@@ -27,6 +27,8 @@ services:
     depends_on:
       - rabbitmq
     network_mode: host
+    env_file:
+      - ./External/EmailSender/.env
     privileged: true # Added to grant extended privileges to the container
 
   # jambo-server:

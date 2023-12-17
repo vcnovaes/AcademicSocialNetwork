@@ -1,14 +1,13 @@
 import * as redis from 'redis'
-import { CacheManagerClient } from './CacheManagerClient'
+import { ICacheManagerClient } from './CacheManagerClient'
 
-export class RedisCacheClient extends CacheManagerClient
+export class RedisCacheClient implements ICacheManagerClient
 {
   private url!: string
   private client
 
   constructor ()
   {
-    super()
     this.url = Bun.env.redisCacheUrl as string
     this.client = redis.createClient( {
       url: this.url

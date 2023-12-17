@@ -1,9 +1,6 @@
 import { IEmailPayload } from "./IEmailPayload"
 
-export abstract class EmailSender
+export interface IEmailSenderClient
 {
-  async sendEmail( email: IEmailPayload )
-  {
-    throw new Error( "Not implemented" )
-  }
+  sendEmail( email: IEmailPayload ): Promise<void>
 }

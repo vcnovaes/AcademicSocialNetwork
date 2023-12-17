@@ -1,71 +1,34 @@
 import { Model, Document, Schema, model } from 'mongoose'
-import { CacheManagerClient } from '../../communication/infrastructure/cache/CacheManagerClient'
+import { ICacheManagerClient } from '../../communication/infrastructure/cache/CacheManagerClient'
 import { CacheManagerFactory } from '../../communication/infrastructure/cache/CacheManagerFactory'
+import { IUser } from '../../entities/IUser'
+import { UserModelFactory } from './UserModelFactory'
+import { IUserTemporaryRepository } from './IUserTemporaryRepository'
 
-export class UserTemporaryRepository
+export class UserTemporaryRepository implements IUserTemporaryRepository
 {
-  private cacheManager: CacheManagerClient | undefined
+  private cacheManager: ICacheManagerClient
+  private ttl: number = 60000
 
-  constructor ()
+  constructor ( client: ICacheManagerClient | undefined )
   {
-    this.cacheManager = CacheManagerFactory.getInstance()
-  }
-
-  async getAll(): Promise<Task[]>
-  {
-    const cachedTasks = await this.redisClient.get( 'tasks' )
-    if ( cachedTasks )
+    if ( client === undefined )
     {
-      return JSON.parse( cachedTasks )
+      throw Error( "Client is undefined" )
     }
-
-    const tasks = await TaskModel.find()
-    await this.redisClient.set( 'tasks', JSON.stringify( tasks ) )
-    return tasks
+    this.cacheManager = client
   }
 
-  async getById( id: string ): Promise<Task | null>
+
+  async add( user: IUser ): Promise<void>
   {
-    const cachedTask = await this.redisClient.get( `task:${ id }` )
-    if ( cachedTask )
-    {
-      return JSON.parse( cachedTask )
-    }
-
-    const task = await TaskModel.findById( id )
-    if ( task )
-    {
-      await this.redisClient.set( `task:${ id }`, JSON.stringify( task ) )
-    }
-
-    return task
+    await this.cacheManager.put( user.email, JSON.stringify( user ), this.ttl )
   }
 
-  async create( task: Task ): Promise<Task>
+  async get( key: string )
   {
-    const newTask = await TaskModel.create( task )
-    await this.clearCache()
-    return newTask
-  }
-
-  async update( id: string, task: Task ): Promise<Task | null>
-  {
-    const updatedTask = await TaskModel.findByIdAndUpdate( id, task, { new: true } )
-    if ( updatedTask )
-    {
-      await this.clearCache()
-    }
-    return updatedTask
-  }
-
-  async delete( id: string ): Promise<void>
-  {
-    await TaskModel.findByIdAndDelete( id )
-    await this.clearCache()
-  }
-
-  private async clearCache(): Promise<void>
-  {
-    await this.redisClient.del( 'tasks' )
+    const obj = await this.cacheManager.get( key ) ?? ""
+    const user = JSON.parse( obj ) as IUser
+    return user
   }
 }

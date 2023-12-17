@@ -1,5 +1,5 @@
-export abstract class CacheManagerClient
+export interface ICacheManagerClient
 {
-  async put( key: string, value: string, ttlInSeconds: number ) { throw new Error( "Not implemented" ) }
-  async get( key: string ): Promise<string | null> { throw new Error( "Not implemented" ) }
+  put( key: string, value: string, ttlInSeconds: number ): Promise<void>
+  get( key: string ): Promise<string | null>
 }
