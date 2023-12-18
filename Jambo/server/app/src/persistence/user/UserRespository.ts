@@ -1,36 +1,43 @@
-import { Model, Document, Schema, model } from 'mongoose'
-import { UserModelFactory } from './UserModelFactory'
+// UserRepository.ts
+import { PrismaClient } from '@prisma/client'
 import { IUser } from '../../entities/IUser'
+import PrismaClientSingleton from '../../communication/infrastructure/database/PrismaClientSingleton'
+import IUserRepository from './IUserRepository'
 
-export class UserRepository
+
+export class UserRepository implements IUserRepository
 {
-  private model
-  constructor ()
-  {
-    this.model = UserModelFactory.getInstance()
-  }
   async getAll()
   {
-    return this.model.find()
+    return PrismaClientSingleton.getInstance().user.findMany()
   }
 
-  async getByEmail( id: string )
+  async getByEmail( email: string )
   {
-    return this.model.findById( id )
+    return PrismaClientSingleton.getInstance().user.findUnique( {
+      where: { email },
+    } )
   }
 
   async create( user: IUser )
   {
-    return this.model.create( user )
+    return PrismaClientSingleton.getInstance().user.create( {
+      data: user,
+    } )
   }
 
-  async update( id: string, user: IUser )
+  async update( email: string, user: IUser )
   {
-    return this.model.findByIdAndUpdate( id, user, { new: true } )
+    return PrismaClientSingleton.getInstance().user.update( {
+      where: { email },
+      data: user,
+    } )
   }
 
-  async delete( id: string )
+  async delete( email: string )
   {
-    await this.model.findByIdAndDelete( id )
+    await PrismaClientSingleton.getInstance().user.delete( {
+      where: { email },
+    } )
   }
 }

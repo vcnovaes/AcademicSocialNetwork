@@ -53,3 +53,16 @@ export class CodeGenerator
     return this.strategy.generateCode()
   }
 }
+
+
+export class ConfirmationCode
+{
+  public static getCode()
+  {
+    return new CodeGenerator( new RandomCodeStrategy() ).generateCode()
+  }
+  public static compare( code0: string, code1: string )
+  {
+    return code0 === code1
+  }
+}

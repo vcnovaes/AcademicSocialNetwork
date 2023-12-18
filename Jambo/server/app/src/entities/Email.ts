@@ -1,6 +1,6 @@
 import { EmailSenderFacade } from "../communication/external/EmailSenderFacade"
 import { IEmailPayload } from "../communication/external/IEmailPayload"
-import { CodeGenerator, RandomCodeStrategy } from "../persistence/utils/CodeGenerator"
+import { CodeGenerator, RandomCodeStrategy } from "../utils/CodeGenerator"
 
 interface Email extends IEmailPayload
 {
@@ -40,16 +40,17 @@ interface EmailDecorator
 export class EmailConfirmationDecorator implements EmailDecorator
 {
   private email: Email
+  private confirmationCode: string
 
-  constructor ( email: Email )
+  constructor ( email: Email, confirmationCode: string )
   {
     this.email = email
+    this.confirmationCode = confirmationCode
   }
 
   decorate(): void
   {
-    const code = new CodeGenerator( new RandomCodeStrategy() ).generateCode()
-    this.email.message = `Confirmation Code: ${ code }`
+    this.email.message = `Confirmation Code: ${ this.confirmationCode }`
     this.email.subject = "Jambo - Email Confirmation"
   }
 
@@ -63,9 +64,9 @@ export class EmailConfirmationDecorator implements EmailDecorator
 
 export class ConfirmationEmail
 {
-  public static async send( reciever: string )
+  public static async send( reciever: string, confirmationCode: string )
   {
-    const email = new EmailConfirmationDecorator( new BasicEmail( reciever ) )
+    const email = new EmailConfirmationDecorator( new BasicEmail( reciever ), confirmationCode )
     return email.send()
   }
 }

@@ -1,4 +1,4 @@
-import { ISchemaField } from "../utils/ISchemaField"
+import { ISchemaField } from "../../utils/ISchemaField"
 
 export class UserSchemaBuilder
 {
