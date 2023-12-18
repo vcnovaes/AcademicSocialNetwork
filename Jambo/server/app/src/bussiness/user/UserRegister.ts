@@ -33,6 +33,16 @@ export class UserRegister
     await this.repository.create( user )
   }
 
+  async update( email: string, newUserData: IUser )
+  {
+    await this.repository.update( email, newUserData )
+  }
+
+  async delete( email: string )
+  {
+    await this.repository.delete( email )
+  }
+
 
 
 }
