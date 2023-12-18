@@ -1,6 +1,10 @@
 version: "3"
 
 services:
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6378:6378"
   rabbitmq:
     image: "rabbitmq:management"
     ports:
@@ -14,13 +18,28 @@ services:
     depends_on:
       - rabbitmq
     network_mode: host
+    env_file:
+      - ./External/EmailSender/.env
     privileged: true # Added to grant extended privileges to the container
 
   jambo-server:
     build:
-      context: ./JamboApp/jambo
-      dockerfile: Dockerfile
+      context: ./Jambo/server
+      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
     depends_on:
       - rabbitmq
-    ports:
-      - "8080:8080" # Adjust the port as needed
+      - redis
+    network_mode: host
+    env_file:
+      - ./Jambo/server/app/.env
+    privileged: true # Added to grant extended privileges to the container
+  
+  jambo-client:
+    build:
+      context: ./Jambo/client/
+      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
+    depends_on:
+      - jambo-server
+    network_mode: host
+    privileged: true # Added to grant extended privileges to the container
+  
