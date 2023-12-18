@@ -36,12 +36,8 @@ export class UserRegisterControl
       console.error( "User not found " )
       return
     }
-    if ( !registration.confirmationCode )
-    {
-      console.info( "User already confirmed" )
-      return registration as IUser
-    }
-    if ( ConfirmationCode.compare( registration.confirmationCode, confirmationCode ) )
+
+    if ( ConfirmationCode.compare( registration.confirmationCode ?? "", confirmationCode ) )
     {
       delete registration.confirmationCode
       console.log( "Confirmation Succeed " )

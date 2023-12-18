@@ -59,8 +59,11 @@ export const UserPresenter = new Elysia().group( "user", ( app ) =>
         return
       }
       const usr = await userRegisterControl.confirmRegistration( email, confirmationCode )
-      if ( !usr )
+      if ( usr == undefined )
+      {
         set.status = 400
+        return
+      }
       set.status = 200
       return usr
     } )
