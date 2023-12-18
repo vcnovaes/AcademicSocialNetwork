@@ -33,3 +33,13 @@ services:
     env_file:
       - ./Jambo/server/app/.env
     privileged: true # Added to grant extended privileges to the container
+  
+  jambo-client:
+    build:
+      context: ./Jambo/client/
+      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
+    depends_on:
+      - jambo-server
+    network_mode: host
+    privileged: true # Added to grant extended privileges to the container
+  
