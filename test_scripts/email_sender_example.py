@@ -19,7 +19,7 @@ def publish_message():
     # Message to be published
 
     data = {
-        "reciever": "vini2novaes@gmail.com",
+        "reciever": "mock_example@gmail.com",
         "subject": "SUBJECT__",
         "message": "-MESSAGE--",
     }
