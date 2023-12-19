@@ -1,4 +1,4 @@
-import Elysia, { InternalServerError } from "elysia";
+import Elysia, { InternalServerError, NotFoundError } from "elysia";
 import { IUser } from "../entities/IUser";
 import { HttpStatusCode } from "../communication/http/HTTPStatusCode";
 import { Jambo } from "..";
@@ -100,5 +100,14 @@ export const UserPresenter = new Elysia().group("user", (app) =>
         console.error(err);
         throw new InternalServerError();
       }
+    })
+    .get("/", async ({ jwt, cookie: { auth } }) => {
+      const { email } = (await jwt.verify(auth)) as any;
+      console.info(email);
+      const userData = await Jambo.getUser(email);
+      if (!userData) {
+        throw new NotFoundError();
+      }
+      return userData;
     })
 );

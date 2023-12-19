@@ -34,4 +34,10 @@ export class JamboFacade {
   public async deleteUser(email: string) {
     return this.userRegisterControl.deleteUser(email);
   }
+
+  public async getUser(email: string) {
+    const user = await this.userRegisterControl.getUser(email);
+    user.password = "*".repeat(user.password.length);
+    return user;
+  }
 }

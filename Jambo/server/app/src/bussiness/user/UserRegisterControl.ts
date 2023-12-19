@@ -71,7 +71,8 @@ class UserRegisterControl implements IUserRegisterControl {
     );
   }
   public async getUser(email: string): Promise<IUser> {
-    return (await this.userRegister.getUser(email)) as IUser;
+    const user = (await this.userRegister.getUser(email)) as IUser;
+    return user;
   }
 
   public async isPasswordCorrect(user: IUser, incomePassword: string) {
