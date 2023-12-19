@@ -6,16 +6,18 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/cookie": "^0.7.0",
+    "@elysiajs/cors": "^0.7.2",
+    "@elysiajs/jwt": "^0.7.1",
     "@prisma/client": "^5.7.0",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
-    "@elysiajs/cors": "^0.7.2",
+    "amqplib": "0.10.3",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "elysia": "latest",
     "prisma": "^5.7.0",
-    "redis": "4.6.11",
-    "amqplib": "0.10.3"
+    "redis": "4.6.11"
   },
   "devDependencies": {
     "bun-types": "latest"
