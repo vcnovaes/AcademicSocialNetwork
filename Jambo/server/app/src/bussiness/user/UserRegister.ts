@@ -10,7 +10,11 @@ export class UserRegister
   private temporaryRepository: IUserTemporaryRepository
   private encryptation: IEncryptionStrategy
 
-  constructor ( repository: IUserRepository, temporaryRepository: IUserTemporaryRepository, encryptation: IEncryptionStrategy )
+  constructor (
+    repository: IUserRepository,
+    temporaryRepository: IUserTemporaryRepository,
+    encryptation: IEncryptionStrategy
+  )
   {
     this.repository = repository
     this.temporaryRepository = temporaryRepository
@@ -24,8 +28,12 @@ export class UserRegister
   }
   async getUser( email: string )
   {
-    return this.temporaryRepository.get( email ) ??
-      this.repository.getByEmail( email )
+    const cachedUser = await this.temporaryRepository.get( email )
+    console.log( "Cached user:", cachedUser )
+    if ( cachedUser != null ) return cachedUser
+    const user = await this.repository.getByEmail( email )
+    console.log( user )
+    return user
   }
 
   async save( user: IUser )
@@ -33,6 +41,10 @@ export class UserRegister
     await this.repository.create( user )
   }
 
+  async getAll()
+  {
+    return await this.repository.getAll()
+  }
   async update( email: string, newUserData: IUser )
   {
     await this.repository.update( email, newUserData )
@@ -43,6 +55,8 @@ export class UserRegister
     await this.repository.delete( email )
   }
 
-
-
+  getEncryptationStrategy()
+  {
+    return this.encryptation
+  }
 }

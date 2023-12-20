@@ -1,5 +1,4 @@
 // UserRepository.ts
-import { PrismaClient } from '@prisma/client'
 import { IUser } from '../../entities/IUser'
 import PrismaClientSingleton from '../../communication/infrastructure/database/PrismaClientSingleton'
 import IUserRepository from './IUserRepository'
@@ -28,10 +27,11 @@ export class UserRepository implements IUserRepository
 
   async update( email: string, user: IUser )
   {
-    return PrismaClientSingleton.getInstance().user.update( {
+    await PrismaClientSingleton.getInstance().user.updateMany( {
       where: { email },
       data: user,
     } )
+
   }
 
   async delete( email: string )

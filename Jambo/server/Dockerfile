@@ -7,7 +7,7 @@ COPY ./app /app
 
 RUN bun install 
 RUN bun add amqplib @types/amqplib
-RUN bunx prisma migrate dev --name init
+RUN bunx prisma migrate dev --name migration
 RUN bunx prisma generate
 
 EXPOSE 3000/tcp
