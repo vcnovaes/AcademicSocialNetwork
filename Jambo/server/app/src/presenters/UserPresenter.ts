@@ -100,8 +100,14 @@ export const UserPresenter = new Elysia().group("user", (app) =>
       }
     })
 
-    .get("/", async ({ jwt, cookie: { auth } }) => {
+    .get("/", async ({ jwt, cookie, headers }) => {
+      console.log("headers", headers.cookie);
+      console.log(cookie);
+      const auth = cookie.auth;
+      console.info(auth);
       const email = await Auth.verifySession(auth, jwt);
+      console.log("VERFIED", email);
+      if (!email) throw new NotFoundError();
       const userData = await Jambo.getUser(email);
       if (!userData) {
         throw new NotFoundError();

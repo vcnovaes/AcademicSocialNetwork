@@ -19,13 +19,13 @@ const UserProfileForm: React.FC = () => {
   // Fetch user data from the server
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/user", {
+      const response = await fetch("http://localhost:3000/user/", {
         method: "GET",
         headers: {
-          // Include the 'auth' cookie in the request headers
-          Cookie: document.cookie,
           jwt: "",
+          Cookie: document.cookie,
         },
+        redirect: "follow",
       });
 
       if (response.ok) {

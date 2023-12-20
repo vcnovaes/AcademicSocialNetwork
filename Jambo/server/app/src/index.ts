@@ -22,7 +22,7 @@ export const Jambo = new JamboFacade(
   )
 );
 const app = new Elysia()
-  .use(cors())
+  .use(cors({ credentials: true, origin: true, exposedHeaders: "*" }))
   .get("/", () => "Hello Elysia")
   .use(UserPresenter)
   .listen(3000);
