@@ -1,5 +1,4 @@
 // UserRepository.ts
-import { PrismaClient } from '@prisma/client'
 import { IUser } from '../../entities/IUser'
 import PrismaClientSingleton from '../../communication/infrastructure/database/PrismaClientSingleton'
 import IUserRepository from './IUserRepository'

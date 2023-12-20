@@ -1,1 +1,1 @@
-{ "dependencies": { "@elysiajs/cors": "^0.7.2", "@types/amqplib": "^0.10.4", "@types/mongoose": "^5.11.97", "@types/redis": "^4.0.11", "amqplib": "^0.10.3", "mongoose": "^8.0.3", "redis": "^4.6.11" } }
+{ "dependencies": { "@elysiajs/cookie": "^0.7.0", "@elysiajs/cors": "^0.7.2", "@types/amqplib": "^0.10.4", "@types/mongoose": "^5.11.97", "@types/redis": "^4.0.11", "amqplib": "^0.10.3", "mongoose": "^8.0.3", "redis": "^4.6.11" } }
