@@ -27,10 +27,11 @@ export class UserRepository implements IUserRepository
 
   async update( email: string, user: IUser )
   {
-    return PrismaClientSingleton.getInstance().user.update( {
+    await PrismaClientSingleton.getInstance().user.updateMany( {
       where: { email },
       data: user,
     } )
+
   }
 
   async delete( email: string )
