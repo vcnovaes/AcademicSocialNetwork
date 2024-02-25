@@ -6,5 +6,5 @@ def load():
     env.load_dotenv()
 
 
-def get(var: str) -> str:
-    return getenv(var)
+def get(var: str, conv: None) -> str:
+    return conv(getenv(var))
