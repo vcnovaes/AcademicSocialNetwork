@@ -1,6 +1,6 @@
 from typing import Union
 from data.user import UserModel
-from data import user as userorm
+from data import user as user_repository
 from fastapi import FastAPI, HTTPException
 from configuration import config
 from core.encryptation import hash_password
@@ -13,7 +13,7 @@ db_session = get_db()
 
 @app.get("/{user_id}")
 async def read_root(user_id: str):
-    user = await userorm.get_user(db_session, user_id)
+    user = await user_repository.get_user(db_session, user_id)
     return user
 
 
@@ -21,13 +21,13 @@ async def read_root(user_id: str):
 async def create_user(user: UserModel):
 
     hashed_user = hash_password(user)
-    await userorm.create_user(db_session, hashed_user)
+    await user_repository.create_user(db_session, hashed_user)
     return hashed_user
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.put("/")
+async def update_user(user: UserModel):
+    await user_repository.update_user(db_session, user)
 
 
 if __name__ == "__main__":

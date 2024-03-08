@@ -47,5 +47,16 @@ async def get_user(db_session: Session, id: str) -> UserORM:
     return db_session.execute(query).scalars().first()
 
 
+async def update_user(db_session: Session, user: UserModel):
+    query = db_session.query(UserORM).filter(
+        UserORM.id == user.id
+    ).update({UserORM.email: user.email,
+              UserORM.first_name: user.first_name,
+              UserORM.last_name: user.last_name,
+              UserORM.password: user.password
+              })
+    db_session.execute(query)
+    await db_session.commit()
+    db_session.refresh(user.orm())
 engine = create_engine("sqlite:///test.db")
 Base.metadata.create_all(engine)
