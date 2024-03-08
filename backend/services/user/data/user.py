@@ -16,16 +16,21 @@ class UserORM(Base):
     last_name = Column(String, nullable=False)
 
 
+class LoginModel(BaseModel):
+    email: str
+    password: str
+
+
 class UserModel(BaseModel):
     first_name: str
     last_name: str
-    id: Optional[str]
+    id: Optional[str] = None
     email: str
     password: str  # Fixed typo here
 
-    @validator("id", pre=True, always=True)
-    def default_id(cls, v):
-        return v or str(uuid4())
+    # @validator("id", pre=True, always=True)
+    # def default_id(cls, v):
+    #     return v or str(uuid4())
 
     def orm(self): return UserORM(
         id=self.id,
@@ -39,12 +44,30 @@ class UserModel(BaseModel):
 async def create_user(db_session: Session, user: UserModel) -> UserORM:
     db_session.add(user.orm())
     db_session.commit()
-    await db_session.refresh(user.orm())
+
+
+async def get_user_by_email(db_session: Session, email: str):
+    query = db_session.query(UserORM).filter(UserORM.email == email)
+    return db_session.execute(query).scalars().first()
 
 
 async def get_user(db_session: Session, id: str) -> UserORM:
     query = db_session.query(UserORM).filter(UserORM.id == id)
     return db_session.execute(query).scalars().first()
+
+
+def get_all_users(db_session: Session) -> list[UserORM]:
+    """Retrieves all users from the database.
+
+    Args:
+        db_session: The SQLAlchemy session object.
+
+    Returns:
+        A list of UserORM objects representing all users.
+    """
+    query = db_session.query(UserORM)
+    users = query.all()
+    return users
 
 
 async def update_user(db_session: Session, user: UserModel):
@@ -55,8 +78,7 @@ async def update_user(db_session: Session, user: UserModel):
               UserORM.last_name: user.last_name,
               UserORM.password: user.password
               })
-    db_session.execute(query)
-    await db_session.commit()
-    db_session.refresh(user.orm())
+    db_session.commit()
+
 engine = create_engine("sqlite:///test.db")
 Base.metadata.create_all(engine)

@@ -7,7 +7,7 @@ def encrypt(input: str) -> str:
 
 
 def check(input: str, hashed_input: str) -> bool:
-    return checkpw(input, hashed_input)
+    return checkpw(input.encode(), hashed_input.encode())
 
 
 def hash_password(user: UserModel):
