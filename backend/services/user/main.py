@@ -1,6 +1,4 @@
 from typing import Union
-import uuid
-from core.uuid import add_id
 from data.user import LoginModel, UserModel
 from data import user as user_repository
 from fastapi import FastAPI, HTTPException
