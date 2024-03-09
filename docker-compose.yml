@@ -12,34 +12,22 @@ services:
       - "5672:5672" # RabbitMQ default port
       - "15672:15672" # RabbitMQ management plugin port
     # network_mode: host
-  email-sender:
-    build:
-      context: ./External/EmailSender
-      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
-    depends_on:
-      - rabbitmq
-    network_mode: host
-    env_file:
-      - ./External/EmailSender/.env
-    privileged: true # Added to grant extended privileges to the container
+  # email-sender:
+  #   build:
+  #     context: ./External/EmailSender
+  #     dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
+  #   depends_on:
+  #     - rabbitmq
+  #   network_mode: host
+  #   env_file:
+  #     - ./External/EmailSender/.env
+  #   privileged: true # Added to grant extended privileges to the container
 
-  jambo-server:
-    build:
-      context: ./Jambo/server
-      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
-    depends_on:
-      - rabbitmq
-      - redis
-    network_mode: host
-    env_file:
-      - ./Jambo/server/app/.env
-    privileged: true # Added to grant extended privileges to the container
-
-  jambo-client:
-    build:
-      context: ./Jambo/client/
-      dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
-    depends_on:
-      - jambo-server
-    network_mode: host
-    privileged: true # Added to grant extended privileges to the container
+  # jambo-client:
+  #   build:
+  #     context: ./Jambo/client/
+  #     dockerfile: Dockerfile # Make sure to adjust this if your Dockerfile has a different name
+  #   depends_on:
+  #     - jambo-server
+  #   network_mode: host
+  #   privileged: true # Added to grant extended privileges to the container
