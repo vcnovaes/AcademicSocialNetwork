@@ -4,14 +4,23 @@ services:
   redis:
     image: "redis:latest"
     ports:
-      - "6378:6378"
-    # network_mode: host
+      - "6379:6379"
   rabbitmq:
     image: "rabbitmq:management"
     ports:
       - "5672:5672" # RabbitMQ default port
       - "15672:15672" # RabbitMQ management plugin port
     # network_mode: host
+  user-service: 
+    build: 
+      context: ./backend/services/user/
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/services/user/configuration/.env
+    privileged: true 
+    network_mode: host
+
+
   # email-sender:
   #   build:
   #     context: ./External/EmailSender

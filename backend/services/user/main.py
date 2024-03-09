@@ -47,4 +47,4 @@ async def update_user(user: UserModel):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=config.get('PORT', int))
+    uvicorn.run(app, host="localhost", port=config.get('PORT', int))
