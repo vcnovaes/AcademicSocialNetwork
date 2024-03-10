@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 import pika, sys, os
-from schedularModel import SchedularModel 
+from schedulerModel import SchedulerModel 
 import json
 from datetime import datetime
 import requests
@@ -15,15 +14,15 @@ def passou_da_hora(hora_atual, hora_agendada):
 
   return hora_atual >= hora_agendada
 
-def main():
+def consumer():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
 
-    channel.queue_declare(queue='hello')
+    channel.queue_declare(queue='schedule')
 
     def callback(ch, method, properties, body):
         d = json.loads(body)
-        obj = SchedularModel(**d)
+        obj = SchedulerModel(**d)
         if passou_da_hora(datetime.now().strftime('%Y-%m-%d %H-%M-%S'), obj.date_time):
             print("enviando requisição")
             response = None
@@ -43,14 +42,5 @@ def main():
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
-if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        print('Interrupted')
-        try:
-            sys.exit(0)
-        except SystemExit:
-            os._exit(0)
 
 
