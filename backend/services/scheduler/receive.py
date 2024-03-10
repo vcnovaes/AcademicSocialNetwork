@@ -35,9 +35,9 @@ def consumer():
                     print("operation not supported")
             print("response: ", response.json())
         else:
-            channel.basic_publish(exchange='', routing_key='hello', body=body)
+            channel.basic_publish(exchange='', routing_key='schedule', body=body)
 
-    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue='schedule', on_message_callback=callback, auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
