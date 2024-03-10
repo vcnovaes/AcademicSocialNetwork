@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from typing import Annotated
+from fastapi import FastAPI, HTTPException, Header
 import httpx
-
+import auth
 app = FastAPI()
 
 # Define downstream service URLs
@@ -16,14 +17,11 @@ SERVICE_B_URL = "http://localhost:8002"
 '''
 
 
-@app.get("/api/pvt/{service_name}/")
-async def gateway(service_name: str):
-    if service_name == "service_a":
-        return await forward_request(SERVICE_A_URL)
-    elif service_name == "service_b":
-        return await forward_request(SERVICE_B_URL)
-    else:
-        raise HTTPException(status_code=404, detail="Service not found")
+@app.post("/api/pvt/{service_name}/new_post")
+async def create(service_name: str, JamboAuthCookie: Annotated[str | None, Header(convert_underscores=False)] = None):
+    is_valid = auth.AuthServiceClient.validate(JamboAuthCookie)
+    if is_valid.status_code != 200:
+        return HTTPException(403, 'Forbbiden')
 
 # Function to forward request to downstream services
 
