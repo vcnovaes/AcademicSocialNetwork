@@ -8,9 +8,15 @@ SERVICE_A_URL = "http://localhost:8000"
 SERVICE_B_URL = "http://localhost:8002"
 
 # Gateway endpoint to route requests to downstream services
+'''
+- Every mapped route should be redirected for the corresponding client 
 
 
-@app.get("/gateway/{service_name}")
+
+'''
+
+
+@app.get("/api/pvt/{service_name}/")
 async def gateway(service_name: str):
     if service_name == "service_a":
         return await forward_request(SERVICE_A_URL)
