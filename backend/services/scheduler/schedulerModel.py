@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class SchedularModel(BaseModel):
+class SchedulerModel(BaseModel):
     date_time: str
     route: str
     payload: str
