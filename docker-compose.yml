@@ -18,8 +18,21 @@ services:
     env_file:
       - ./backend/services/user/configuration/.env
     privileged: true 
-    network_mode: host
+    ports:
+      - "8081:8081"
 
+  auth-service: 
+    build: 
+      context: ./backend/services/auth/
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/services/auth/configuration/.env
+    depends_on:
+      - redis
+      - user-service
+    privileged: true 
+    ports: 
+      - "8084:8084"
 
   # email-sender:
   #   build:
