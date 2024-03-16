@@ -6,13 +6,25 @@ from configuration import config
 from core.encryptation import hash_password
 from core.encryptation import check
 from configuration.db import get_db
+from fastapi.middleware.cors import CORSMiddleware
+
 
 config.load()
 app = FastAPI()
 db_session = get_db()
 
+origins = ["*"]
 
-@app.get("/{user_id}")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/pvt/{user_id}")
 async def read_root(user_id: str):
     user = await user_repository.get_user(db_session, user_id)
     return user
@@ -23,7 +35,7 @@ def debug():
     return user_repository.get_all_users(db_session)
 
 
-@app.post("/")
+@app.post("/pub/create")
 async def create_user(user: UserModel):
     hashed_user = hash_password(user)
     await user_repository.create_user(db_session, hashed_user)
@@ -40,7 +52,7 @@ async def login(loginData: LoginModel):
         return HTTPException(403)
 
 
-@app.put("/")
+@app.put("/pvt/update")
 async def update_user(user: UserModel):
     await user_repository.update_user(db_session, user)
 

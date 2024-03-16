@@ -1,0 +1,6 @@
+{
+  "users": "http://user-service:8001",
+  "auth": "http://auth-service:8084",
+  "test": "http://test-service:8000",
+  "test2": "https://jsonplaceholder.typicode.com"
+}

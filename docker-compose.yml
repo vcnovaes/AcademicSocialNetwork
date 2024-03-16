@@ -4,14 +4,50 @@ services:
   redis:
     image: "redis:latest"
     ports:
-      - "6378:6378"
-    # network_mode: host
+      - "6379:6379"
+    networks:
+      - jambo-net 
   rabbitmq:
     image: "rabbitmq:management"
     ports:
       - "5672:5672" # RabbitMQ default port
       - "15672:15672" # RabbitMQ management plugin port
+    networks:
+      - jambo-net
+
     # network_mode: host
+  user-service: 
+    build: 
+      context: ./backend/services/user/
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/services/user/configuration/.env
+    privileged: true 
+    ports:
+      - "8001:8001"
+    networks:
+      - jambo-net
+
+  auth-service: 
+    build: 
+      context: ./backend/services/auth/
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/services/auth/configuration/.env
+    depends_on:
+      - redis
+      - user-service
+    privileged: true 
+    ports: 
+      - "8084:8084"
+    networks:
+      - jambo-net
+
+networks:
+   jambo-net:
+     driver: bridge
+     external: true
+
   # email-sender:
   #   build:
   #     context: ./External/EmailSender
