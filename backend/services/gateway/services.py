@@ -1,4 +1,11 @@
+from pydantic import BaseModel
+
 services_map: dict[str, str] = {
-    'users': '8081',
-    'auth': '8084'
+    'users': 'http://user-service:8001',
+    'auth': 'http://auth-service:8084'
 }
+
+
+class NewPostModel(BaseModel):
+    owner: str = ''
+    text: str

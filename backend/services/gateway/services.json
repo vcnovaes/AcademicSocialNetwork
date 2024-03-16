@@ -1,0 +1,4 @@
+{
+  "users": "http://user-service:8001",
+  "auth": "http://auth-service:8084"
+}

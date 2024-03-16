@@ -8,13 +8,23 @@ from client.cache_client import CacheClient
 from core.jwt_provider import JwtProvider
 from client.user_service import UserServiceClient
 from redis import Redis
+from fastapi.middleware.cors import CORSMiddleware
+
 
 config.load()
 app = FastAPI()
 cache = CacheClient(
-    Redis()
+    Redis(host='redis')
 )
+origins = ['*']
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 jwt_provider = JwtProvider(
     config.get('CREDENTIAL_TTL', int),
@@ -22,7 +32,7 @@ jwt_provider = JwtProvider(
 )
 
 
-@app.post("/authenticate")
+@app.post("/pub/authenticate")
 async def authenticate(login: LoginForm):
     authenticated = UserServiceClient.login(login).status_code
     if authenticated != 200:
@@ -34,7 +44,7 @@ async def authenticate(login: LoginForm):
     return response
 
 
-@app.post("/validate")
+@app.post("/pub/validate")
 async def validate(token: JwtToken):
     credential = cache.get(token.token)
     if credential != None:

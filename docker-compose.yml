@@ -5,11 +5,16 @@ services:
     image: "redis:latest"
     ports:
       - "6379:6379"
+    networks:
+      - jambo-net 
   rabbitmq:
     image: "rabbitmq:management"
     ports:
       - "5672:5672" # RabbitMQ default port
       - "15672:15672" # RabbitMQ management plugin port
+    networks:
+      - jambo-net
+
     # network_mode: host
   user-service: 
     build: 
@@ -19,7 +24,9 @@ services:
       - ./backend/services/user/configuration/.env
     privileged: true 
     ports:
-      - "8081:8081"
+      - "8001:8001"
+    networks:
+      - jambo-net
 
   auth-service: 
     build: 
@@ -33,6 +40,13 @@ services:
     privileged: true 
     ports: 
       - "8084:8084"
+    networks:
+      - jambo-net
+
+networks:
+   jambo-net:
+     driver: bridge
+     external: true
 
   # email-sender:
   #   build:
