@@ -21,10 +21,10 @@ service_provider = ServiceProvider()
 
 def visibility_handle(path: str, auth_cookie: str):
     if path[:3] == 'pvt':
-        auth_middleware(auth_cookie)
-    if path[:3] not in {'pub', 'pvt'}:
-        return HTTPException(404)
-    pass
+        return auth_middleware(auth_cookie)
+    if path[:3] == 'pub':
+        return
+    raise HTTPException(400)
 
 
 @app.get("/api/{service_name}/{path:path}")

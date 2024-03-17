@@ -21,10 +21,10 @@ class AuthServiceClient(IAuthService):
 
     @cb
     def authenticate(self, login):
-        return requests.post(AuthServiceClient.base_url + '/authenticate',
+        return requests.post(self.base_url + '/authenticate',
                              data=json.dumps(login))
 
     @cb
-    async def validate(self, token) -> requests.Response:
-        return requests.post(AuthServiceClient.base_url + '/validate',
+    def validate(self, token) -> requests.Response:
+        return requests.post(self.base_url + '/validate',
                              data=json.dumps(token))

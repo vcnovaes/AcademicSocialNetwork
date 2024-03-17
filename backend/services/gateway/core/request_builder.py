@@ -53,7 +53,7 @@ class RequestBuilder(IRequestBuilder):
         return self
 
     def __build_url(self):
-        return self.host+self.route
+        return self.host+'/'+self.route
 
     def execute(self) -> IRequestBuilder:
 
