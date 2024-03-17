@@ -1,4 +1,6 @@
 {
-  "users": "http://user-service:8001",
-  "auth": "http://auth-service:8084"
+  "users": "http://user-service:8083",
+  "posts": "http://posts-service:8082",
+  "auth": "http://auth-service:8081",
+  "scheduler": "http://scheduler-service:8089"
 }

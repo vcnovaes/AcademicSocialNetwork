@@ -7,7 +7,6 @@ RUN pip install -r requirements.txt
 
 # Copy the application code
 COPY configuration/ ./configuration
-COPY core/ ./core
 COPY data/ ./data
 COPY main.py ./
 

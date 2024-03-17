@@ -40,8 +40,7 @@ async def get_posts_by_owner(owner: str):
 
 @app.post("/pvt/new-post")
 async def create_posts(posts: PostsModel):
-    await posts_repository.create_posts(db_session, posts)
-    return posts
+    return await posts_repository.create_posts(db_session, posts)
 
 
 @app.delete("/pvt/delete-posts/{post_id}")

@@ -2,13 +2,9 @@ from typing import Annotated, Any, Optional
 from fastapi import Body, FastAPI, HTTPException, Header
 from core.services_provider import ServiceProvider
 from core.request_builder import RequestBuilder
-from services import NewPostModel
-import auth
-from services import services_map
 from fastapi.middleware.cors import CORSMiddleware
-import requests
+from auth.auth import auth_middleware
 import json
-
 
 app = FastAPI()
 origins = ['*']
@@ -23,20 +19,12 @@ app.add_middleware(
 service_provider = ServiceProvider()
 
 
-def auth_middleware(jwt: str):
-    auth_response = auth.AuthServiceClient.validate(jwt)
-    if auth_response.status_code != 200:
-        return HTTPException(403, 'Forbbiden')
-    author = auth_response.email
-    new_post_payload = NewPostModel(author, jwt)
-
-
 def visibility_handle(path: str, auth_cookie: str):
     if path[:3] == 'pvt':
-        auth_middleware(auth_cookie)
-    if path[:3] not in {'pub', 'pvt'}:
-        return HTTPException(404)
-    pass
+        return auth_middleware(auth_cookie)
+    if path[:3] == 'pub':
+        return
+    raise HTTPException(400)
 
 
 @app.get("/api/{service_name}/{path:path}")
@@ -54,6 +42,7 @@ def get_request(service_name: str, path:  Optional[str] = None, JamboAuthCookie:
 def post_request(service_name: str, path:  Optional[str] = None,
                  JamboAuthCookie: Annotated[str | None, Header(convert_underscores=False)] = None, request_body: Any = Body(None)):
     visibility_handle(path, JamboAuthCookie)
+    print("REQUEST:", request_body)
     return RequestBuilder(
         service_provider=service_provider,
         service_name=service_name,

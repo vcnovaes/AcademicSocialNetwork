@@ -13,7 +13,7 @@ COPY data/ ./data
 COPY main.py ./
 
 # Expose the port where FastAPI listens (typically 8000)
-EXPOSE 8084
+EXPOSE 8081
 
 # Set the main script as the entrypoint
 ENTRYPOINT ["python", "main.py"]
