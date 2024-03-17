@@ -1,3 +1,4 @@
+import json
 import requests
 
 
@@ -65,10 +66,10 @@ class RequestBuilder(IRequestBuilder):
             }
         match self.method.lower():
             case 'post':
-                return requests.post(self.__build_url(), data=self.body).json()
+                return requests.post(self.__build_url(), json=self.body).json()
             case 'put':
-                return requests.put(self.__build_url(), data=self.body).json()
+                return requests.put(self.__build_url(), json=self.body).json()
             case 'get':
                 return requests.get(self.__build_url()).json()
             case 'delete':
-                return requests.delete(self.__build_url(), data=self.body).json()
+                return requests.delete(self.__build_url(), json=self.body).json()

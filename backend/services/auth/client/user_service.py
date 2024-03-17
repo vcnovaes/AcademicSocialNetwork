@@ -6,7 +6,7 @@ from circuitbreaker import CircuitBreaker
 
 
 class UserServiceClient:
-    baseURL = 'http://user-service:8001'
+    baseURL = 'http://user-service:8083'
     failure_threshold = 5
     recovery_timeout = 30
     cb = CircuitBreaker(failure_threshold=failure_threshold,
