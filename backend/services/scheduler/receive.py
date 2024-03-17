@@ -28,24 +28,29 @@ def consumer():
     def callback(ch, method, properties, body):
         d = json.loads(body)
         obj = SchedulerModel(**d)
-        if passou_da_hora(datetime.now().strftime('%Y-%m-%d %H-%M-%S'), obj.date_time):
-            print("enviando requisição")
-            response = None
-            match obj.action.lower():
-                case "post":
-                    response = requests.post(obj.route, obj.payload)
-                case "get":
-                    response = requests.get(obj.route)
-                case _:
-                    print("operation not supported")
-            print("response: ", response.json())
-        else:
-            print("republishing")
-            channel.basic_publish(
-                exchange='', routing_key='scheduler', body=body)
+        try:
 
+            if passou_da_hora(datetime.now().strftime('%Y-%m-%d %H-%M-%S'), obj.date_time):
+                print("enviando requisição")
+                response = None
+                match obj.action.lower():
+                    case "post":
+                        response = requests.post(obj.route, obj.payload)
+                    case "get":
+                        response = requests.get(obj.route)
+                    case _:
+                        print("operation not supported")
+                print("response: ", response.json())
+            else:
+                print("republishing")
+                channel.basic_publish(
+                    exchange='', routing_key='scheduler', body=body)
+
+        except:
+            print("Error: Publishing message was not successful")
+            print("Message: ", body)
     channel.basic_consume(
-        queue='schedule', on_message_callback=callback, auto_ack=True)
+        queue='scheduler', on_message_callback=callback, auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
