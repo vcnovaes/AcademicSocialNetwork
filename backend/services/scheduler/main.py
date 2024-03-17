@@ -24,8 +24,17 @@ def begin_main():
 
 @app.post("/pvt/schedule")
 async def schedule_request(schedule: SchedulerModel):
-    publish(schedule)
-
+    try:
+        schedule_time = datetime.strptime(
+            schedule.date_time, '%Y-%m-%d %H-%M-%S')
+        if schedule_time > datetime.now():
+            return HTTPException(400, detail="You are scheduling for the pass")
+    except:
+        return HTTPException(400, detail="Not possible to schedule, verify your request")
+    try:
+        publish(schedule)
+    except:
+        return HTTPException(500, detail="Error on publish message")
 
 if __name__ == "__main__":
     api_thread = Thread(target=begin_main)
