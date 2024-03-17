@@ -20,10 +20,10 @@ def passou_da_hora(hora_atual, hora_agendada):
 
 def consumer():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='rabbitmq'))
+        pika.ConnectionParameters(host='rabbitmq', heartbeat=65535))
     channel = connection.channel()
 
-    channel.queue_declare(queue='schedule')
+    channel.queue_declare(queue='scheduler')
 
     def callback(ch, method, properties, body):
         d = json.loads(body)
@@ -40,8 +40,9 @@ def consumer():
                     print("operation not supported")
             print("response: ", response.json())
         else:
+            print("republishing")
             channel.basic_publish(
-                exchange='', routing_key='schedule', body=body)
+                exchange='', routing_key='scheduler', body=body)
 
     channel.basic_consume(
         queue='schedule', on_message_callback=callback, auto_ack=True)
