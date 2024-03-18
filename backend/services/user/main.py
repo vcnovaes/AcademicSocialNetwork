@@ -38,24 +38,29 @@ def debug():
 @app.post("/pub/create")
 async def create_user(user: UserModel):
     hashed_user = hash_password(user)
-    await user_repository.create_user(db_session, hashed_user)
-    return hashed_user
+    return await user_repository.create_user(db_session, hashed_user)
 
 
 @app.post("/login")
 async def login(loginData: LoginModel):
     user = await user_repository.get_user_by_email(db_session, loginData.email)
     if user == None:
-        return HTTPException(404)
+        raise HTTPException(404)
     correct_password = check(loginData.password, user.password)
     if not correct_password:
-        return HTTPException(403)
+        raise HTTPException(403)
+
+    return user
 
 
-@app.put("/pvt/update")
-async def update_user(user: UserModel):
-    await user_repository.update_user(db_session, user)
-
+@app.put("/pvt/{user_id}")
+async def update_user(user: UserModel, user_id: str):
+    user.id = user_id
+    user = hash_password(user)
+    updated = await user_repository.update_user(db_session, user)
+    if updated == None:
+        raise HTTPException(404)
+    return updated
 
 if __name__ == "__main__":
     import uvicorn

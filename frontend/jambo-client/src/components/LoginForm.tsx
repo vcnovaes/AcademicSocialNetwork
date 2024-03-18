@@ -1,6 +1,7 @@
 // src/components/LoginForm.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { AuthClient } from "../clients/AuthClient";
 
 interface LoginFormProps {
   onLogin: (loggedIn: boolean, navigate: NavigateFunction) => void;
@@ -22,32 +23,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
     try {
       // Make a POST request to the login route
-      const response = await fetch("http://localhost:3000/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      if (!response.ok) {
+      const response = await AuthClient.authenticate(loginData);
+      if (response == null || !response.JamboAuthCookie) {
         // Handle authentication failure (e.g., show an error message)
         console.error("Authentication failed");
         return;
       }
       console.log(response);
-      // Extract the cookie from the response headers
-      const cookieHeader = await response.text();
-      console.log(cookieHeader);
-      if (cookieHeader) {
-        // Store the cookie in the browser
-        document.cookie = `auth=${cookieHeader}`;
-        onLogin(true, navigate);
-      }
+      localStorage.setItem("JamboAuthCookie", response.JamboAuthCookie);
+      localStorage.setItem("user_id", response.user_id);
+      onLogin(true, navigate);
 
       alert("Login successful");
-      // navigate("/feed");
-      // Handle successful login (e.g., redirect to another page)
       console.log("Login successful");
     } catch (error) {
       // Handle network or other errors
@@ -64,7 +51,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
             Email:
             <input
               style={inputStyles}
-              type="email"
               name="email"
               value={loginData.email}
               onChange={handleChange}

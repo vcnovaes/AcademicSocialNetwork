@@ -64,6 +64,8 @@ class RequestBuilder(IRequestBuilder):
                 'route': self.route,
                 'body': self.body
             }
+        print("Requesting: ", self.__build_url())
+        print("Payload: ", self.body)
         match self.method.lower():
             case 'post':
                 return requests.post(self.__build_url(), json=self.body).json()

@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from pydantic import BaseModel, validator
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import Session
@@ -42,8 +43,15 @@ class UserModel(BaseModel):
 
 
 async def create_user(db_session: Session, user: UserModel) -> UserORM:
-    db_session.add(user.orm())
-    db_session.commit()
+    user.id = str(uuid4())
+    try:
+        db_session.add(user.orm())
+        db_session.commit()
+    except Exception as err:
+        db_session.rollback()
+        print(err)
+        raise HTTPException(400, "Not valid")
+    return user
 
 
 async def get_user_by_email(db_session: Session, email: str):
@@ -71,14 +79,19 @@ def get_all_users(db_session: Session) -> list[UserORM]:
 
 
 async def update_user(db_session: Session, user: UserModel):
-    query = db_session.query(UserORM).filter(
-        UserORM.id == user.id
-    ).update({UserORM.email: user.email,
-              UserORM.first_name: user.first_name,
-              UserORM.last_name: user.last_name,
-              UserORM.password: user.password
-              })
-    db_session.commit()
+    try:
+        query = db_session.query(UserORM).filter(
+            UserORM.id == user.id
+        ).update({UserORM.email: user.email,
+                  UserORM.first_name: user.first_name,
+                  UserORM.last_name: user.last_name,
+                  UserORM.password: user.password
+                  })
+        db_session.commit()
+        return await get_user(db_session, user.id)
 
+    except:
+        db_session.rollback()
+        raise HTTPException(400)
 engine = create_engine("sqlite:///test.db")
 Base.metadata.create_all(engine)

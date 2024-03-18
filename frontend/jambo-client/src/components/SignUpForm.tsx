@@ -1,10 +1,11 @@
 // src/components/SignUpForm.tsx
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom'
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserClient } from "../clients/UserClient";
 
 interface FormData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
 }
@@ -13,20 +14,19 @@ interface SignUpFormProps {
   onSignUp: (email: string) => void;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
-  const navegate = useNavigate()
+const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
   const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    validateForm()
+    validateForm();
     setFormData({
       ...formData,
       [name]: value,
@@ -34,8 +34,17 @@ const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
   };
 
   const validateForm = () => {
-    const { firstName, lastName, email, password } = formData;
-    const isFormValid = firstName.trim() !== '' && lastName.trim() !== '' && email.trim() !== '' && password.trim() !== '';
+    const {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+    } = formData;
+    const isFormValid =
+      firstName.trim() !== "" &&
+      lastName.trim() !== "" &&
+      email.trim() !== "" &&
+      password.trim() !== "";
     setIsFormValid(isFormValid);
   };
 
@@ -46,31 +55,24 @@ const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
     validateForm();
 
     if (!isFormValid) {
-      console.log('Please fill in all fields before submitting.');
+      console.log("Please fill in all fields before submitting.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:3000/user/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await UserClient.signup(formData);
 
-      if (response.ok) {
+      if (response != undefined) {
         // If the response status is 200, redirect the user to the email confirmation form
-        console.log('User registered successfully!');
+        console.log("User registered successfully!");
         onSignUp(formData.email);
-        navegate("/confirmation")
         // Add your redirection logic here
       } else {
-        console.error('Failed to register user:', response.statusText);
+        console.error("Failed to register user");
         // Handle other status codes if needed
       }
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error("Error during registration:", error);
       // Handle network errors or other issues
     }
   };
@@ -84,8 +86,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
             First Name:
             <input
               type="text"
-              name="firstName"
-              value={formData.firstName}
+              name="first_name"
+              value={formData.first_name}
               onChange={handleChange}
               style={inputStyles}
             />
@@ -96,8 +98,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
             Last Name:
             <input
               type="text"
-              name="lastName"
-              value={formData.lastName}
+              name="last_name"
+              value={formData.last_name}
               onChange={handleChange}
               style={inputStyles}
             />
@@ -128,8 +130,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
           </label>
         </div>
         <div style={formGroupStyles}>
-          <button type="submit" style={{ ...submitButtonStyles, cursor :isFormValid ? "auto": "not-allowed" , backgroundColor: isFormValid ? '#4caf50' : '#83d6b8' }} disabled={!isFormValid}>
-           Sign Up
+          <button
+            type="submit"
+            style={{
+              ...submitButtonStyles,
+              cursor: isFormValid ? "auto" : "not-allowed",
+              backgroundColor: isFormValid ? "#4caf50" : "#83d6b8",
+            }}
+            disabled={!isFormValid}
+          >
+            Sign Up
           </button>
         </div>
       </form>
@@ -137,43 +147,42 @@ const SignUpForm: React.FC<SignUpFormProps> = ( { onSignUp } ) => {
   );
 };
 
-
 // Styles
 const formStyles: React.CSSProperties = {
-  borderRadius: '10px',
-  padding: '20px',
-  maxWidth: '300px',
-  margin: 'auto',
+  borderRadius: "10px",
+  padding: "20px",
+  maxWidth: "300px",
+  margin: "auto",
 };
 
 const formGroupStyles: React.CSSProperties = {
-  marginBottom: '15px',
+  marginBottom: "15px",
 };
 
 const inputStyles: React.CSSProperties = {
-  width: '100%',
-  padding: '8px',
-  borderRadius: '5px',
-  border: '1px solid #ccc',
+  width: "100%",
+  padding: "8px",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
 };
 
 const submitButtonStyles: React.CSSProperties = {
-  width: '100%',
-  padding: '10px',
-  borderRadius: '5px',
-  border: 'none',
-  backgroundColor: '#4caf50',
-  color: '#fff',
-  cursor: 'pointer',
+  width: "100%",
+  padding: "10px",
+  borderRadius: "5px",
+  border: "none",
+  backgroundColor: "#4caf50",
+  color: "#fff",
+  cursor: "pointer",
 };
 // Styles
 const appContainerStyles: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
 };
 
 const titleStyles: React.CSSProperties = {
-  marginBottom: '20px', // Adjust as needed
+  marginBottom: "20px", // Adjust as needed
 };
 export default SignUpForm;
