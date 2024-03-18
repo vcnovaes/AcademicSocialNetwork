@@ -20,6 +20,7 @@ service_provider = ServiceProvider()
 
 
 def visibility_handle(path: str, auth_cookie: str):
+    print(path[:3])
     if path[:3] == 'pvt':
         return auth_middleware(auth_cookie)
     if path[:3] == 'pub':
@@ -41,8 +42,8 @@ def get_request(service_name: str, path:  Optional[str] = None, JamboAuthCookie:
 @app.post("/api/{service_name}/{path:path}")
 def post_request(service_name: str, path:  Optional[str] = None,
                  JamboAuthCookie: Annotated[str | None, Header(convert_underscores=False)] = None, request_body: Any = Body(None)):
-    visibility_handle(path, JamboAuthCookie)
     print("REQUEST:", request_body)
+    visibility_handle(path, JamboAuthCookie)
     return RequestBuilder(
         service_provider=service_provider,
         service_name=service_name,
@@ -56,13 +57,14 @@ def post_request(service_name: str, path:  Optional[str] = None,
 def put_request(service_name: str, path:  Optional[str] = None,
                 JamboAuthCookie: Annotated[str | None, Header(convert_underscores=False)] = None, request_body: Any = Body(None)):
 
+    print("REQUEST:", request_body)
     visibility_handle(path, JamboAuthCookie)
     return RequestBuilder(
         service_provider=service_provider,
         service_name=service_name,
         method='put',
         route=path,
-        request_body=request_body
+        body=request_body
     ).execute()
 
 
@@ -75,7 +77,7 @@ def delete_request(service_name: str, path:  Optional[str] = None,
         service_name=service_name,
         method='delete',
         route=path,
-        request_body=request_body
+        body=request_body
     ).execute()
 
 

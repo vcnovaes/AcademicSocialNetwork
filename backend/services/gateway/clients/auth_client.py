@@ -26,5 +26,6 @@ class AuthServiceClient(IAuthService):
 
     @cb
     def validate(self, token) -> requests.Response:
+        print(token)
         return requests.post(self.base_url + '/validate',
-                             data=json.dumps(token))
+                             data=json.dumps({'token': token}))

@@ -1,17 +1,13 @@
 // src/components/UserProfileForm.tsx
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
-
-interface IUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
+import { IUserRequest, UserClient } from "../clients/UserClient";
+import { useNavigate } from "react-router-dom";
 
 const UserProfileForm: React.FC = () => {
-  const [userData, setUserData] = useState<IUser>({
-    firstName: "",
-    lastName: "",
+  const navigate = useNavigate();
+  let [userData, setUserData] = useState<IUserRequest>({
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
   });
@@ -19,17 +15,19 @@ const UserProfileForm: React.FC = () => {
   // Fetch user data from the server
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/user/", {
-        method: "GET",
-        headers: {
-          jwt: "",
-          Cookie: document.cookie,
-        },
-        redirect: "follow",
-      });
+      if (
+        localStorage.getItem("user_id") == null ||
+        localStorage.getItem("JamboAuthCookie") == null
+      ) {
+        throw new Error("Credential not found");
+      }
+      const response = await UserClient.get(
+        localStorage.getItem("user_id") ?? "",
+        localStorage.getItem("JamboAuthCookie") ?? ""
+      );
 
-      if (response.ok) {
-        const user = await response.json();
+      if (response != undefined) {
+        const user = response;
         setUserData(user);
       } else {
         console.error("Failed to fetch user data");
@@ -55,17 +53,15 @@ const UserProfileForm: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/user", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          // Include the 'auth' cookie in the request headers
-          Cookie: document.cookie,
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (response.ok) {
+      console.log(userData);
+      const response = await UserClient.update(
+        userData,
+        localStorage.getItem("user_id") ?? "",
+        localStorage.getItem("JamboAuthCookie") ?? ""
+      );
+      console.info(response);
+      userData = response;
+      if (response != undefined) {
         console.log("User data updated successfully");
       } else {
         console.error("Failed to update user data");
@@ -75,25 +71,8 @@ const UserProfileForm: React.FC = () => {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/user", {
-        method: "DELETE",
-        // Include the 'auth' cookie in the request headers
-        headers: {
-          Cookie: document.cookie,
-        },
-      });
-
-      if (response.ok) {
-        console.log("User account deleted successfully");
-        // You might want to redirect or perform other actions after deletion
-      } else {
-        console.error("Failed to delete user account");
-      }
-    } catch (error) {
-      console.error("Error deleting user account:", error);
-    }
+  const handleSeePosts = async () => {
+    navigate("/posts");
   };
 
   return (
@@ -105,8 +84,8 @@ const UserProfileForm: React.FC = () => {
             First Name:
             <input
               type="text"
-              name="firstName"
-              value={userData.firstName}
+              name="first_name"
+              value={userData.first_name}
               onChange={handleChange}
             />
           </label>
@@ -116,8 +95,8 @@ const UserProfileForm: React.FC = () => {
             Last Name:
             <input
               type="text"
-              name="lastName"
-              value={userData.lastName}
+              name="last_name"
+              value={userData.last_name}
               onChange={handleChange}
             />
           </label>
@@ -149,7 +128,7 @@ const UserProfileForm: React.FC = () => {
         </div>
       </form>
       <div>
-        <button onClick={handleDelete}>Delete Account</button>
+        <button onClick={handleSeePosts}>See Posts</button>
       </div>
     </div>
   );

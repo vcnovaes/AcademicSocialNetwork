@@ -13,10 +13,11 @@ import LoginForm from "./components/LoginForm";
 import Feed from "./components/Feed";
 import { Navigate } from "react-router-dom";
 import UserProfileForm from "./components/UserDataForm";
+import PostList from "./components/PostsList";
 
 function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  let isAuthenticated = document.cookie.includes("auth");
+  let isAuthenticated = () => localStorage.getItem("JamboAuthCookie") != null;
   console.log(isAuthenticated);
   const handleUserSignUp = (email: string) => {
     // Set the user's email in the state when signing up
@@ -24,7 +25,6 @@ function App() {
   };
   const handleUserLogin = (logged: boolean, navigate: NavigateFunction) => {
     // Handle login logic here
-    isAuthenticated = true;
     navigate("/feed");
     console.log("user logged");
   };
@@ -48,12 +48,18 @@ function App() {
         />
         <Route
           path="/feed"
-          Component={() => (isAuthenticated ? <Feed /> : <Navigate to="/" />)}
+          Component={() => (isAuthenticated() ? <Feed /> : <Navigate to="/" />)}
+        />
+        <Route
+          path="/posts"
+          Component={() =>
+            isAuthenticated() ? <PostList /> : <Navigate to="/" />
+          }
         />
         <Route
           path="/user"
           Component={() =>
-            isAuthenticated ? <UserProfileForm /> : <Navigate to="/" />
+            isAuthenticated() ? <UserProfileForm /> : <Navigate to="/" />
           }
         />
       </Routes>

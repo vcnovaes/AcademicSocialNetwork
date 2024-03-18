@@ -36,10 +36,7 @@ async def create_posts(db_session: Session, posts: PostsModel) -> PostsORM:
 
 
 async def delete_post_by_id(db_session: Session, post_id: int) -> None:
-    post = db_session.query(PostsORM).filter(PostsORM.id == post_id).first()
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-    db_session.delete(post)
+    post = db_session.query(PostsORM).filter(PostsORM.id == post_id).delete()
     db_session.commit()
 
 

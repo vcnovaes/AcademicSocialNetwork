@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from requests import Response
 from fastapi.responses import JSONResponse
 from configuration import config
 import datetime
@@ -34,18 +35,21 @@ jwt_provider = JwtProvider(
 
 @app.post("/pub/authenticate")
 async def authenticate(login: LoginForm):
-    authenticated = UserServiceClient.login(login).status_code
+    login_response: Response = UserServiceClient.login(login)
+    authenticated = login_response.status_code
     if authenticated != 200:
-        return HTTPException(403)
-    jwt = jwt_provider.generate(login.email)
+        raise HTTPException(403)
+    user_id = login_response.json()['id']
+    jwt = jwt_provider.generate(user_id)
     cache.put(jwt, login.email)
     response = JSONResponse(content=jwt)
     response.set_cookie(key='JamboAuthCookie', value=jwt)
-    return response
+    return {'JamboAuthCookie': jwt, 'user_id': user_id}
 
 
-@app.post("/pub/validate")
+@app.post("/validate")
 async def validate(token: JwtToken):
+    print(token)
     credential = cache.get(token.token)
     if credential != None:
         return {'email': credential, 'jwt': token}
@@ -53,9 +57,9 @@ async def validate(token: JwtToken):
         decoded_jwt = jwt_provider.decode(token)
         if decoded_jwt.exp < datetime.datetime.utcnow():
             return decoded_jwt
-        return HTTPException(400)
+        raise HTTPException(400)
     except:
-        return HTTPException(500)
+        raise HTTPException(500)
 
 if __name__ == "__main__":
     import uvicorn
